@@ -55,6 +55,11 @@
             <groupId>com.softgroup</groupId>
             <artifactId>common-dao-impl</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.softgroup</groupId>
+            <artifactId>common-datamapper</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

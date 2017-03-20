@@ -19,7 +19,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement( proxyTargetClass = true )
-@EnableJpaRepositories( "com,softgroup.common.dao.impl.repository" )
+@EnableJpaRepositories( "com.softgroup.common.dao.impl.repository" )
 @ComponentScan( basePackages = "com.softgroup.common.dao.impl",
         excludeFilters = @ComponentScan.Filter( type = FilterType.ANNOTATION, value = {Configuration.class}) )
 public class DaoAppCfg {
