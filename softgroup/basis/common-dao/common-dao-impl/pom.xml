@@ -15,7 +15,11 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <db.driver>org.postgresql.Driver</db.driver>
+        <db.url>jdbc:postgresql://localhost:5432/server_db</db.url>
+        <db.login>postgres</db.login>
+        <db.password>postgres</db.password>
     </properties>
 
     <dependencyManagement>
@@ -58,4 +62,22 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.5.3</version>
+                <configuration>
+                    <changeLogFile>
+                        ${basedir}/src/main/resources/liquibase/master.xml
+                    </changeLogFile>
+                    <driver>${db.driver}</driver>
+                    <url>${db.url}</url>
+                    <username>${db.login}</username>
+                    <password>${db.password}</password>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

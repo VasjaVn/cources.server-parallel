@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns='http://www.liquibase.org/xml/ns/dbchangelog'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                   xsi:schemaLocation='http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd'>
+
+    <changeSet id="1" author="v">
+        <createTable tableName="tbl_profile">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(50)" />
+            <column name="create_date_time" type="bigint" />
+            <column name="update_date_time" type="bigint" />
+            <column name="name" type="varchar(10)" defaultValue="" />
+            <column name="status" type="varchar(50)" defaultValue="" />
+            <column name="avatar_uri" type="varchar(50)" defaultValue="" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

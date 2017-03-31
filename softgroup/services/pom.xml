@@ -59,6 +59,16 @@
 			<groupId>com.softgroup</groupId>
 			<artifactId>common-router-api</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.softgroup</groupId>
+			<artifactId>common-utility</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.softgroup</groupId>
+			<artifactId>common-dao-api</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -22,5 +22,10 @@
             <groupId>com.softgroup</groupId>
             <artifactId>authorization-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.softgroup</groupId>
+            <artifactId>common-token</artifactId>
+        </dependency>
     </dependencies>
 </project>

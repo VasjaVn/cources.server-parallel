@@ -24,6 +24,8 @@ import java.util.Properties;
         excludeFilters = @ComponentScan.Filter( type = FilterType.ANNOTATION, value = {Configuration.class}) )
 public class DaoAppCfg {
     private static final String[] ENTITY_PACKAGES = {
+            "com.softgroup.common.dao.api.entities.authorization",
+            "com.softgroup.common.dao.api.entities.messenger",
             "com.softgroup.common.dao.api.entities.profile"
     };
 

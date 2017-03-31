@@ -3,11 +3,17 @@ package com.softgroup.authorization.impl.handler;
 import com.softgroup.authorization.api.message.LoginRequestData;
 import com.softgroup.authorization.api.message.LoginResponseData;
 import com.softgroup.authorization.api.router.AuthorizationRequestHandler;
+import com.softgroup.common.datamapper.JacksonDataMapper;
 import com.softgroup.common.protocol.Request;
 import com.softgroup.common.protocol.Response;
-import com.softgroup.common.protocol.ResponseBuilder;
 import com.softgroup.common.router.api.AbstractRequestHandler;
+import com.softgroup.common.token.JwtToken;
+import com.softgroup.common.utility.response.ResponseFactory;
+import com.softgroup.common.utility.response.ResponseStatus;
+import com.softgroup.common.utility.time.TimeStampUtil;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class LoginHandler
@@ -23,22 +29,28 @@ public class LoginHandler
     
     @Override
     public Response<LoginResponseData> commandHandle(Request<LoginRequestData> request) {
-        /*
-            Wrote for testing this method.
-            In  the future need rewrite this.
-            Using some service with access to DB.
-        */
-        LoginResponseData data = new LoginResponseData();
-        data.setToken("TOKEN_1");
+        ResponseStatus responseStatus = ResponseStatus.BAD_REQUEST;
+        LoginResponseData responseData = null;
 
-        ResponseBuilder<LoginRequestData, LoginResponseData> builder = new ResponseBuilder<>(request);
+        LoginRequestData requestData =
+                new JacksonDataMapper().convert( (Map<String, Object>)(request.getData()), LoginRequestData.class );
 
-        Response<LoginResponseData> response = builder
-                                                    .withData(data)
-                                                    .withCode(200)
-                                                    .withMessage("OK")
-                                                    .build();
+        String deviceToken = requestData.getDeviceToken();
+        String token = generateTokenFromDeviceToken( deviceToken );
 
-        return response;
+        if ( token != null ) {
+            responseData = new LoginResponseData();
+            responseData.setToken( token );
+            responseStatus = ResponseStatus.OK;
+        }
+
+        return ResponseFactory.create( request, responseData, responseStatus);
+    }
+
+    private String generateTokenFromDeviceToken(String deviceToken) {
+        long createdTime = TimeStampUtil.current();
+        long expiredTime = TimeStampUtil.expiredBuilder(createdTime).addHours(12).build();
+
+        return JwtToken.createTokenFromDeviceToken(deviceToken, createdTime, expiredTime);
     }
 }

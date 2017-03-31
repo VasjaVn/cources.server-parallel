@@ -24,7 +24,13 @@ public class ConversationEntity implements Serializable {
     private String logoImageUri;
 
     @Column(name = "type")
-    private ConversationType type;
+    private int type;
+
+    @Column(name = "admin_id")
+    private String adminId;
+
+    @Column(name = "exists")
+    private boolean exists;
 
     @Column(name = "last_message_index")
     private Long lastMessageIndex;
@@ -53,12 +59,28 @@ public class ConversationEntity implements Serializable {
         this.logoImageUri = logoImageUri;
     }
 
-    public ConversationType getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(ConversationType type) {
+    public void setType(int type) {
         this.type = type;
+    }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
+
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
     }
 
     public Long getLastMessageIndex() {
@@ -74,15 +96,17 @@ public class ConversationEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConversationEntity that = (ConversationEntity) o;
-        return Objects.equals(id, that.id) &&
+        return type == that.type &&
+                exists == that.exists &&
+                Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(logoImageUri, that.logoImageUri) &&
-                type == that.type &&
+                Objects.equals(adminId, that.adminId) &&
                 Objects.equals(lastMessageIndex, that.lastMessageIndex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, logoImageUri, type, lastMessageIndex);
+        return Objects.hash(id, name, logoImageUri, type, adminId, exists, lastMessageIndex);
     }
 }

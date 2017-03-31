@@ -20,10 +20,10 @@ public class ProfileEntity implements Serializable {
     private String phoneNumber;
 
     @Column(name = "create_date_time")
-    private Long createDateTime;
+    private long createDateTime;
 
     @Column(name = "update_date_time")
-    private Long updateDateTime;
+    private long updateDateTime;
 
     @Column(name = "name")
     private String name;
@@ -50,19 +50,19 @@ public class ProfileEntity implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getCreateDateTime() {
+    public long getCreateDateTime() {
         return createDateTime;
     }
 
-    public void setCreateDateTime(Long createDateTime) {
+    public void setCreateDateTime(long createDateTime) {
         this.createDateTime = createDateTime;
     }
 
-    public Long getUpdateDateTime() {
+    public long getUpdateDateTime() {
         return updateDateTime;
     }
 
-    public void setUpdateDateTime(Long updateDateTime) {
+    public void setUpdateDateTime(long updateDateTime) {
         this.updateDateTime = updateDateTime;
     }
 
@@ -94,14 +94,14 @@ public class ProfileEntity implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProfileEntity that = (ProfileEntity) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(phoneNumber, that.phoneNumber) &&
-                Objects.equals(createDateTime, that.createDateTime) &&
-                Objects.equals(updateDateTime, that.updateDateTime) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(avatarUri, that.avatarUri);
+        ProfileEntity entity = (ProfileEntity) o;
+        return createDateTime == entity.createDateTime &&
+                updateDateTime == entity.updateDateTime &&
+                Objects.equals(id, entity.id) &&
+                Objects.equals(phoneNumber, entity.phoneNumber) &&
+                Objects.equals(name, entity.name) &&
+                Objects.equals(status, entity.status) &&
+                Objects.equals(avatarUri, entity.avatarUri);
     }
 
     @Override

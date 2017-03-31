@@ -10,25 +10,28 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.softgroup.authorization.impl.configuration.AuthorizationAppCfg;
 import com.softgroup.common.dao.impl.configuration.DaoAppCfg;
 import com.softgroup.common.router.impl.configuration.RouterAppCfg;
+import com.softgroup.frontend.security.configuration.SecurityRestAppCfg;
+import com.softgroup.frontend.ws.WebSocketAppCfg;
 import com.softgroup.messenger.impl.configuration.MessengerAppCfg;
 import com.softgroup.profile.impl.configuration.ProfileAppCfg;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
-@WebAppConfiguration
+@Configuration
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @ComponentScan("com.softgroup.frontend.rest")
-@Import({ RouterAppCfg.class, AuthorizationAppCfg.class, ProfileAppCfg.class, MessengerAppCfg.class, DaoAppCfg.class})
+@Import({ RouterAppCfg.class, AuthorizationAppCfg.class, ProfileAppCfg.class, MessengerAppCfg.class, DaoAppCfg.class, SecurityRestAppCfg.class, WebSocketAppCfg.class})
+//@Import({ RouterAppCfg.class, AuthorizationAppCfg.class, ProfileAppCfg.class, MessengerAppCfg.class, SecurityRestAppCfg.class})
 public class RestAppCfg extends WebMvcConfigurerAdapter {
 
     @Override
