@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "tbl_conversation")
 public class ConversationEntity implements Serializable {
 
-    private static final long serialVersionUID = -6928420122164361954L;
+    private static final long serialVersionUID = -8269920454650981449L;
 
     @Id
     @Column(name = "id")
@@ -20,17 +20,20 @@ public class ConversationEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "logo_image_uri")
-    private String logoImageUri;
-
     @Column(name = "type")
     private int type;
+
+    @Column(name = "logo_image_uri")
+    private String logoImageUri;
 
     @Column(name = "admin_id")
     private String adminId;
 
     @Column(name = "exists")
     private boolean exists;
+
+    @Column(name = "create_date")
+    private Long createDate;
 
     @Column(name = "last_message_index")
     private Long lastMessageIndex;
@@ -51,20 +54,20 @@ public class ConversationEntity implements Serializable {
         this.name = name;
     }
 
-    public String getLogoImageUri() {
-        return logoImageUri;
-    }
-
-    public void setLogoImageUri(String logoImageUri) {
-        this.logoImageUri = logoImageUri;
-    }
-
     public int getType() {
         return type;
     }
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getLogoImageUri() {
+        return logoImageUri;
+    }
+
+    public void setLogoImageUri(String logoImageUri) {
+        this.logoImageUri = logoImageUri;
     }
 
     public String getAdminId() {
@@ -81,6 +84,14 @@ public class ConversationEntity implements Serializable {
 
     public void setExists(boolean exists) {
         this.exists = exists;
+    }
+
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
     }
 
     public Long getLastMessageIndex() {
@@ -102,11 +113,12 @@ public class ConversationEntity implements Serializable {
                 Objects.equals(name, that.name) &&
                 Objects.equals(logoImageUri, that.logoImageUri) &&
                 Objects.equals(adminId, that.adminId) &&
+                Objects.equals(createDate, that.createDate) &&
                 Objects.equals(lastMessageIndex, that.lastMessageIndex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, logoImageUri, type, adminId, exists, lastMessageIndex);
+        return Objects.hash(id, name, type, logoImageUri, adminId, exists, createDate, lastMessageIndex);
     }
 }
