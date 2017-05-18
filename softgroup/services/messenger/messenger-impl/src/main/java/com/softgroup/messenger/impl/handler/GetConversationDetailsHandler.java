@@ -1,8 +1,8 @@
 package com.softgroup.messenger.impl.handler;
 
-import com.softgroup.common.dao.api.entities.messenger.ConversationDetailsEntity;
+import com.softgroup.common.dao.api.entities.messenger.ConversationMemberEntity;
 import com.softgroup.common.dao.api.entities.profile.ProfileEntity;
-import com.softgroup.common.dao.api.service.ConversationDetailsDaoService;
+import com.softgroup.common.dao.api.service.ConversationMemberDaoService;
 import com.softgroup.common.dao.api.service.ProfileDaoService;
 import com.softgroup.common.datamapper.JacksonDataMapper;
 import com.softgroup.common.protocol.Request;
@@ -31,7 +31,7 @@ public class GetConversationDetailsHandler
     private ProfileDaoService profileDaoService;
 
     @Autowired
-    private ConversationDetailsDaoService conversationDetailsDaoService;
+    private ConversationMemberDaoService conversationMemberDaoService;
 
     @Override
     public String getName() {
@@ -45,16 +45,16 @@ public class GetConversationDetailsHandler
 
         String conversationId = requestData.getConversationId();
 
-        List<ConversationDetailsEntity> listEntities =
-                conversationDetailsDaoService.findByConversationId( conversationId );
+        List<ConversationMemberEntity> listEntities =
+                conversationMemberDaoService.findByConversationId( conversationId );
 
         GetConversationDetailsResponseData responseData = null;
         ResponseStatus responseStatus = ResponseStatus.BAD_REQUEST;
 
         if ( listEntities != null ) {
             List<ProfileEntity> members = new ArrayList<>();
-            for ( ConversationDetailsEntity entity : listEntities ) {
-                String userId = entity.getMemberId();
+            for ( ConversationMemberEntity entity : listEntities ) {
+                String userId = entity.getUserId();
                 System.out.println( "userId = " + userId );
 
                 ProfileEntity profileEntity = profileDaoService.findById(userId);

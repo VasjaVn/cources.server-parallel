@@ -1,18 +1,18 @@
 package com.softgroup.messenger.api.message;
 
 import com.softgroup.common.protocol.ResponseData;
-import com.softgroup.messenger.api.dto.ConversationSettings;
+import com.softgroup.messenger.api.dto.ConversationSettingsDto;
 
 public class GetConversationSettingsResponseData implements ResponseData {
     private static final long serialVersionUID = -823982739540964715L;
 
-    private ConversationSettings conversationSettings;
+    private ConversationSettingsDto conversationSettingsDto;
 
-    public ConversationSettings getConversationSettings() {
-        return conversationSettings;
+    public ConversationSettingsDto getConversationSettingsDto() {
+        return conversationSettingsDto;
     }
 
-    public void setConversationSettings(ConversationSettings conversationSettings) {
-        this.conversationSettings = conversationSettings;
+    public void setConversationSettingsDto(ConversationSettingsDto conversationSettingsDto) {
+        this.conversationSettingsDto = conversationSettingsDto;
     }
 }

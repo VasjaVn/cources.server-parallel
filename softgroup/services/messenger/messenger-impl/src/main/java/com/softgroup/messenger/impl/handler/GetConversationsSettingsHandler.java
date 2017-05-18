@@ -8,7 +8,7 @@ import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
 import com.softgroup.common.utility.response.ResponseFactory;
 import com.softgroup.common.utility.response.ResponseStatus;
-import com.softgroup.messenger.api.dto.ConversationSettings;
+import com.softgroup.messenger.api.dto.ConversationSettingsDto;
 import com.softgroup.messenger.api.message.GetConversationsSettingsRequestData;
 import com.softgroup.messenger.api.message.GetConversationsSettingsResponseData;
 import com.softgroup.messenger.api.router.MessengerRequestHandler;
@@ -45,19 +45,19 @@ public class GetConversationsSettingsHandler
         List<String> conversationsIds = requestData.getConversationsIds();
 
         if ( conversationsIds != null ) {
-            List<ConversationSettings> conversationsSettings = new ArrayList<>();
+            List<ConversationSettingsDto> conversationsSettings = new ArrayList<>();
 
             for ( String conversationId : conversationsIds ) {
                 ConversationEntity conversation = conversationDaoService.findById( conversationId );
 
                 if ( conversation != null ) {
-                    ConversationSettings conversationSettings = new ConversationSettings();
-                    conversationSettings.setId( conversationId );
-                    conversationSettings.setName( conversation.getName() );
-                    conversationSettings.setAdminId( conversation.getAdminId() );
-                    conversationSettings.setLogoImageUri( conversation.getLogoImageUri() );
+                    ConversationSettingsDto conversationSettingsDto = new ConversationSettingsDto();
+                    conversationSettingsDto.setId( conversationId );
+                    conversationSettingsDto.setName( conversation.getName() );
+                    conversationSettingsDto.setAdminId( conversation.getAdminId() );
+                    conversationSettingsDto.setLogoImageUri( conversation.getLogoImageUri() );
 
-                    conversationsSettings.add( conversationSettings );
+                    conversationsSettings.add(conversationSettingsDto);
                 }
             }
 

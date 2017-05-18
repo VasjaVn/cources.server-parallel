@@ -3,11 +3,13 @@ package com.softgroup.messenger.impl.handler;
 import com.softgroup.common.dao.api.entities.messenger.ConversationEntity;
 import com.softgroup.common.dao.api.service.ConversationDaoService;
 import com.softgroup.common.datamapper.JacksonDataMapper;
+import com.softgroup.common.exceptions.MapperException;
 import com.softgroup.common.protocol.Request;
 import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
 import com.softgroup.common.utility.response.ResponseFactory;
 import com.softgroup.common.utility.response.ResponseStatus;
+import com.softgroup.messenger.api.dto.ConversationDto;
 import com.softgroup.messenger.api.message.GetConversationsByIdsRequestData;
 import com.softgroup.messenger.api.message.GetConversationsByIdsResponseData;
 import com.softgroup.messenger.api.router.MessengerRequestHandler;
@@ -37,6 +39,43 @@ public class GetConversationsByIdsHandler
     public Response<GetConversationsByIdsResponseData> commandHandle(Request<GetConversationsByIdsRequestData> request) {
         ResponseStatus responseStatus = ResponseStatus.BAD_REQUEST;
         GetConversationsByIdsResponseData responseData = null;
+
+        try {
+            GetConversationsByIdsRequestData requestData =
+                    new JacksonDataMapper().convert((Map<String, Object>) request.getData(), GetConversationsByIdsRequestData.class );
+
+            List<String> conversationsIds = requestData.getConversationsIds();
+
+            if ( conversationsIds != null & !conversationsIds.isEmpty() ) {
+                List<ConversationEntity> conversationEntities = new ArrayList<>();
+
+                for ( String conversationId : conversationsIds ) {
+                    ConversationEntity conversationEntity = conversationDaoService.findById( conversationId );
+                    if ( conversationEntity != null ) {
+                        conversationEntities.add( conversationEntity );
+                    }
+                }
+
+                if ( !conversationEntities.isEmpty() ) {
+                    List<ConversationDto> listConversationDto = new ArrayList<>();
+
+                    for ( ConversationEntity conversationEntity : conversationEntities ) {
+                        ConversationDto conversationDto = new ConversationDto();
+                        conversationDto.setId( conversationEntity.getId() );
+                        conversationDto.setName( conversationEntity.getName() );
+                        conversationDto.setType( conversationEntity.getType() );
+                        conversationDto.setLogoImageUri( conversationEntity.getLogoImageUri() );
+                    }
+                    responseData = new GetConversationsByIdsResponseData();
+                    responseData.setConversations( conversationEntities );
+
+                    responseStatus = ResponseStatus.OK;
+                }
+            }
+
+        } catch (MapperException e) {
+
+        }
 
         GetConversationsByIdsRequestData requestData =
                 new JacksonDataMapper().convert((Map<String, Object>) request.getData(), GetConversationsByIdsRequestData.class );

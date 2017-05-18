@@ -6,6 +6,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface ConversationRepository extends PagingAndSortingRepository<ConversationEntity, String> {
+
     List<ConversationEntity> findByType(Integer type);
+
     List<ConversationEntity> findAll();
 }

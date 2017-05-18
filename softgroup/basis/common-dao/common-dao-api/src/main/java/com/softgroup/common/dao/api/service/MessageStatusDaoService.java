@@ -1,4 +1,4 @@
 package com.softgroup.common.dao.api.service;
 
-public interface MessageDaoService {
+public interface MessageStatusDaoService {
 }

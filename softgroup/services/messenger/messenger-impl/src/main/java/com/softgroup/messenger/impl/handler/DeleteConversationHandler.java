@@ -3,6 +3,7 @@ package com.softgroup.messenger.impl.handler;
 import com.softgroup.common.dao.api.entities.messenger.ConversationEntity;
 import com.softgroup.common.dao.api.service.ConversationDaoService;
 import com.softgroup.common.datamapper.JacksonDataMapper;
+import com.softgroup.common.exceptions.MapperException;
 import com.softgroup.common.protocol.Request;
 import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
@@ -33,23 +34,26 @@ public class DeleteConversationHandler
 
     @Override
     public Response<DeleteConversationResponseData> commandHandle(Request<DeleteConversationRequestData> request) {
-        return wasSetExistsConversationToFalse(request) ?
-                ResponseFactory.create(request, new DeleteConversationResponseData(), ResponseStatus.OK) :
-                ResponseFactory.create(request, null, ResponseStatus.BAD_REQUEST);
-    }
+        DeleteConversationResponseData responseData = null;
+        ResponseStatus responseStatus = ResponseStatus.BAD_REQUEST;
 
-    private boolean wasSetExistsConversationToFalse(Request<DeleteConversationRequestData> request) {
-        DeleteConversationRequestData requestData =
-                new JacksonDataMapper().convert((Map<String, Object>) request.getData(), DeleteConversationRequestData.class);
+        try {
+            DeleteConversationRequestData requestData =
+                    new JacksonDataMapper().convert((Map<String, Object>) request.getData(), DeleteConversationRequestData.class);
 
-        ConversationEntity entity = conversationDaoService.findById( requestData.getConversationId() );
+            String conversationId = requestData.getConversationId();
+            ConversationEntity conversation = conversationDaoService.findById( conversationId );
 
-        if ( entity != null ) {
-            entity.setExists( false );
-            conversationDaoService.save( entity );
-            return true;
+            if ( conversation != null ) {
+                conversation.setExists( false );
+                conversationDaoService.save( conversation );
+                responseData = new DeleteConversationResponseData();
+                responseStatus = ResponseStatus.OK;
+            }
+        } catch (MapperException e) {
+            // NOP
         }
 
-        return false;
+        return ResponseFactory.create( request, responseData, responseStatus );
     }
 }

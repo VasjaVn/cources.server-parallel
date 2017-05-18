@@ -8,6 +8,8 @@
     <include file="/src/main/resources/liquibase/tbl_profile.xml" />
     <include file="/src/main/resources/liquibase/tbl_device.xml" />
     <include file="/src/main/resources/liquibase/tbl_conversation.xml" />
-    <include file="/src/main/resources/liquibase/tbl_conversation_details.xml" />
+    <include file="/src/main/resources/liquibase/tbl_conversation_member.xml" />
+    <include file="/src/main/resources/liquibase/tbl_message.xml" />
+    <include file="/src/main/resources/liquibase/tbl_message_status.xml" />
 
 </databaseChangeLog>

@@ -1,15 +1,18 @@
 package com.softgroup.messenger.impl.handler;
 
-import com.softgroup.common.dao.api.entities.messenger.ConversationDetailsEntity;
 import com.softgroup.common.dao.api.entities.messenger.ConversationEntity;
+import com.softgroup.common.dao.api.entities.messenger.ConversationMemberEntity;
 import com.softgroup.common.dao.api.service.ConversationDaoService;
-import com.softgroup.common.dao.api.service.ConversationDetailsDaoService;
+import com.softgroup.common.dao.api.service.ConversationMemberDaoService;
 import com.softgroup.common.datamapper.JacksonDataMapper;
+import com.softgroup.common.exceptions.MapperException;
 import com.softgroup.common.protocol.Request;
 import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
 import com.softgroup.common.utility.response.ResponseFactory;
 import com.softgroup.common.utility.response.ResponseStatus;
+import com.softgroup.common.utility.time.TimeStampUtil;
+import com.softgroup.messenger.api.dto.ConversationDto;
 import com.softgroup.messenger.api.message.CreateConversationRequestData;
 import com.softgroup.messenger.api.message.CreateConversationResponseData;
 import com.softgroup.messenger.api.router.MessengerRequestHandler;
@@ -30,7 +33,7 @@ public class CreateConversationHandler
     private ConversationDaoService conversationDaoService;
 
     @Autowired
-    private ConversationDetailsDaoService conversationDetailsDaoService;
+    private ConversationMemberDaoService conversationMemberDaoService;
 
     @Override
     public String getName() {
@@ -39,33 +42,55 @@ public class CreateConversationHandler
 
     @Override
     public Response<CreateConversationResponseData> commandHandle(Request<CreateConversationRequestData> request) {
-        CreateConversationRequestData requestData =
-                new JacksonDataMapper().convert((Map<String, Object>) request.getData(), CreateConversationRequestData.class );
+        CreateConversationResponseData responseData = null;
+        ResponseStatus responseStatus = ResponseStatus.OK;
 
-        String conversationId = UUID.randomUUID().toString();
+        try {
+            CreateConversationRequestData requestData =
+                    new JacksonDataMapper().convert((Map<String, Object>) request.getData(), CreateConversationRequestData.class );
 
-        ConversationEntity conversationEntity = new ConversationEntity();
-        conversationEntity.setId( conversationId );
-        conversationEntity.setName( "" );
-        conversationEntity.setType( requestData.getType() );
-        conversationEntity.setLastMessageIndex( 0L );
-        conversationEntity.setAdminId( request.getCredential().getUserId() );
-        conversationEntity.setLogoImageUri( "" );
-        conversationEntity.setExists( true );
+            String conversationId = UUID.randomUUID().toString();
 
-        conversationDaoService.save( conversationEntity );
+            ConversationEntity conversation = new ConversationEntity();
+            conversation.setId( conversationId );
+            conversation.setName( "" );
+            conversation.setAdminId( request.getCredential().getUserId() );
+            conversation.setLogoImageUri( "" );
+            conversation.setType( requestData.getType() );
+            conversation.setExists( true );
+            conversation.setCreateDate( TimeStampUtil.current());
+            conversation.setLastMessageIndex( 0L );
 
-        for (String memberId : requestData.getMembersIds()) {
-            ConversationDetailsEntity entity = new ConversationDetailsEntity();
-            entity.setId( UUID.randomUUID().toString() );
-            entity.setConversationId( conversationId );
-            entity.setMemberId( memberId );
-            conversationDetailsDaoService.save( entity );
+            conversationDaoService.save( conversation );
+
+            for (String memberId : requestData.getMembersIds()) {
+                String conversationMemberId = UUID.randomUUID().toString();
+
+                ConversationMemberEntity conversationMember = new ConversationMemberEntity();
+                conversationMember.setId( conversationMemberId );
+                conversationMember.setConversationId( conversationId );
+                conversationMember.setUserId( memberId );
+                conversationMember.setLastMessageIndex( 0L );
+                conversationMember.setDeletedUser( false );
+                conversationMember.setJoinDateUser( TimeStampUtil.current() );
+
+                conversationMemberDaoService.save( conversationMember );
+            }
+
+            ConversationDto conversationDto = new ConversationDto();
+            conversationDto.setId( conversationId );
+            conversationDto.setName( "" );
+            conversationDto.setLogoImageUri( "" );
+            conversationDto.setType( requestData.getType() );
+            conversationDto.setLastMessageIndex( 0L );
+
+            responseData = new CreateConversationResponseData();
+            responseData.setConversationDto( conversationDto );
+
+        } catch (MapperException e) {
+            responseStatus = ResponseStatus.BAD_REQUEST;
         }
 
-        CreateConversationResponseData responseData = new CreateConversationResponseData();
-        responseData.setConversation(conversationEntity);
-
-        return ResponseFactory.create(request, responseData, ResponseStatus.OK );
+        return ResponseFactory.create( request, responseData, responseStatus );
     }
 }

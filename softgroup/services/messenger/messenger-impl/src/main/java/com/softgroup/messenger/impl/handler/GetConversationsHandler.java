@@ -3,21 +3,20 @@ package com.softgroup.messenger.impl.handler;
 import com.softgroup.common.dao.api.entities.messenger.ConversationEntity;
 import com.softgroup.common.dao.api.service.ConversationDaoService;
 import com.softgroup.common.datamapper.JacksonDataMapper;
+import com.softgroup.common.exceptions.MapperException;
 import com.softgroup.common.protocol.Request;
 import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
 import com.softgroup.common.utility.response.ResponseFactory;
 import com.softgroup.common.utility.response.ResponseStatus;
+import com.softgroup.messenger.api.dto.ConversationDto;
 import com.softgroup.messenger.api.message.GetConversationsRequestData;
 import com.softgroup.messenger.api.message.GetConversationsResponseData;
 import com.softgroup.messenger.api.router.MessengerRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class GetConversationsHandler
@@ -26,14 +25,14 @@ public class GetConversationsHandler
 {
     private static final String MSNG_CMD_GET_CONVERSATIONS_NAME = "get_conversations";
 
-    private static final Integer INDIVIDUAL_TYPE = 0;
-    private static final Integer GROUP_TYPE = 1;
-    private static Set<Integer> setValueTypes;
+    private static final Integer INDIVIDUAL_CONVERSATION_TYPE = 0;
+    private static final Integer GROUP_CONVERSATION_TYPE = 1;
+    private static Set<Integer> conversationTypes;
 
     static {
-        setValueTypes = new HashSet<>();
-        setValueTypes.add(INDIVIDUAL_TYPE);
-        setValueTypes.add(GROUP_TYPE);
+        conversationTypes = new HashSet<>();
+        conversationTypes.add( INDIVIDUAL_CONVERSATION_TYPE );
+        conversationTypes.add( GROUP_CONVERSATION_TYPE );
     }
 
     @Autowired
@@ -46,25 +45,47 @@ public class GetConversationsHandler
 
     @Override
     public Response<GetConversationsResponseData> commandHandle(Request<GetConversationsRequestData> request) {
-        GetConversationsRequestData requestData =
-                new JacksonDataMapper().convert((Map<String, Object>) request.getData(), GetConversationsRequestData.class);
+        ResponseStatus responseStatus = ResponseStatus.BAD_REQUEST;
+        GetConversationsResponseData responseData = null;
 
-        Integer type = requestData.getType();
+        try {
+            GetConversationsRequestData requestData =
+                    new JacksonDataMapper().convert((Map<String, Object>) request.getData(), GetConversationsRequestData.class);
 
-        List<ConversationEntity> conversations = null;
-        ResponseStatus responseStatus = ResponseStatus.OK;
-        if ( type != null ) {
-            if ( setValueTypes.contains(type) ) {
-                conversations = conversationDaoService.findByType(type);
+            Integer type = requestData.getType();
+
+            List<ConversationEntity> conversationEntities = null;
+            if ( type != null ) {
+                if ( conversationTypes.contains( type ) ) {
+                    conversationEntities = conversationDaoService.findByType( type );
+                }
             } else {
-                responseStatus = ResponseStatus.BAD_REQUEST;
+                conversationEntities = conversationDaoService.findAll();
             }
-        } else {
-            conversations = conversationDaoService.findAll();
-        }
 
-        GetConversationsResponseData responseData = new GetConversationsResponseData();
-        responseData.setConversations( conversations );
+            if ( conversationEntities != null ) {
+                List<ConversationDto> listConversationDto = new ArrayList<>();
+                for ( ConversationEntity conversationEntity : conversationEntities  ) {
+
+                    ConversationDto conversationDto = new ConversationDto();
+                    conversationDto.setId( conversationEntity.getId() );
+                    conversationDto.setName( conversationEntity.getName() );
+                    conversationDto.setType( conversationEntity.getType() );
+                    conversationDto.setLogoImageUri( conversationEntity.getLogoImageUri() );
+                    conversationDto.setLastMessageIndex( conversationEntity.getLastMessageIndex() );
+
+                    listConversationDto.add( conversationDto );
+                }
+
+                responseData = new GetConversationsResponseData();
+                responseData.setConversations( listConversationDto );
+
+                responseStatus = ResponseStatus.OK;
+            }
+
+        } catch (MapperException e) {
+            // NOP
+        }
 
         return ResponseFactory.create( request, responseData, responseStatus );
     }

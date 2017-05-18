@@ -6,17 +6,15 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd'>
 
     <changeSet id="1" author="v">
-        <createTable tableName="tbl_conversation">
+        <createTable tableName="tbl_message_status">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="name" type="varchar(50)" />
-            <column name="type" type="int" />
-            <column name="logo_image_uri" type="varchar(50)" />
-            <column name="admin_id" type="varchar(36)" />
-            <column name="exists" type="boolean" defaultValue="true"/>
-            <column name="create_date" type="bigint" />
-            <column name="last_message_index" type="bigint" />
+            <column name="message_id" type="varchar(36)"/>
+            <column name="status" type="int" />
+            <column name="status_update_date" type="bigint" />
+            <column name="user_id" type="varchar(36)"/>
+            <column name="sender_id" type="varchar(36)"/>
         </createTable>
     </changeSet>
 

@@ -8,7 +8,7 @@ import com.softgroup.common.protocol.Response;
 import com.softgroup.common.router.api.AbstractRequestHandler;
 import com.softgroup.common.utility.response.ResponseFactory;
 import com.softgroup.common.utility.response.ResponseStatus;
-import com.softgroup.messenger.api.dto.ConversationSettings;
+import com.softgroup.messenger.api.dto.ConversationSettingsDto;
 import com.softgroup.messenger.api.message.GetConversationSettingsRequestData;
 import com.softgroup.messenger.api.message.GetConversationSettingsResponseData;
 import com.softgroup.messenger.api.router.MessengerRequestHandler;
@@ -44,17 +44,17 @@ public class GetConversationSettingsHandler
 
         ConversationEntity conversation = conversationDaoService.findById( conversationId );
 
-        ConversationSettings conversationSettings = null;
+        ConversationSettingsDto conversationSettingsDto = null;
         if ( conversation != null ) {
-            conversationSettings = new ConversationSettings();
+            conversationSettingsDto = new ConversationSettingsDto();
 
-            conversationSettings.setId( conversationId );
-            conversationSettings.setName( conversation.getName() );
-            conversationSettings.setAdminId( conversation.getAdminId() );
-            conversationSettings.setLogoImageUri( conversation.getLogoImageUri() );
+            conversationSettingsDto.setId( conversationId );
+            conversationSettingsDto.setName( conversation.getName() );
+            conversationSettingsDto.setAdminId( conversation.getAdminId() );
+            conversationSettingsDto.setLogoImageUri( conversation.getLogoImageUri() );
 
             responseData = new GetConversationSettingsResponseData();
-            responseData.setConversationSettings( conversationSettings );
+            responseData.setConversationSettingsDto(conversationSettingsDto);
 
             responseStatus = ResponseStatus.OK;
         }

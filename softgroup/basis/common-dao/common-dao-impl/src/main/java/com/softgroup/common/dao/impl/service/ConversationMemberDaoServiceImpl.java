@@ -1,32 +1,32 @@
 package com.softgroup.common.dao.impl.service;
 
-import com.softgroup.common.dao.api.entities.messenger.ConversationDetailsEntity;
-import com.softgroup.common.dao.api.service.ConversationDetailsDaoService;
-import com.softgroup.common.dao.impl.repository.messenger.ConversationDetailsRepository;
+import com.softgroup.common.dao.api.entities.messenger.ConversationMemberEntity;
+import com.softgroup.common.dao.api.service.ConversationMemberDaoService;
+import com.softgroup.common.dao.impl.repository.messenger.ConversationMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ConversationDetailsDaoServiceImpl implements ConversationDetailsDaoService {
+public class ConversationMemberDaoServiceImpl implements ConversationMemberDaoService {
 
     @Autowired
-    private ConversationDetailsRepository repository;
+    private ConversationMemberRepository repository;
 
     @Override
-    public ConversationDetailsEntity findById(String id) {
+    public ConversationMemberEntity findById(String id) {
         return repository.findOne(id);
     }
 
     @Override
-    public List<ConversationDetailsEntity> findByConversationId(String conversationId) {
+    public List<ConversationMemberEntity> findByConversationId(String conversationId) {
         return repository.findByConversationId(conversationId);
     }
 
     @Override
-    public ConversationDetailsEntity save(ConversationDetailsEntity conversationDetailsEntity) {
-        return repository.save(conversationDetailsEntity);
+    public ConversationMemberEntity save(ConversationMemberEntity conversationMemberEntity) {
+        return repository.save(conversationMemberEntity);
     }
 
     @Override
